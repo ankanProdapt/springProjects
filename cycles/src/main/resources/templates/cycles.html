@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Cycles</title>
+</head>
+
+<body>
+	<h1>Cycles</h1>
+	<ul th:each="cycle : ${cycles}">
+		<li th:text="${cycle}"></li>
+		<form method="get" action="#" th:action="@{/cycles/{status}/{id}(id = ${cycle.id}, status = ${status})}">
+			<input type="submit" th:value="${status}">
+		</form>
+	</ul>
+	<h3 onclick="hide(this)">Add new Cycle 🔽</h3>
+	<form method="post" action="#" th:action="@{/cycles/add}" hidden="true">
+		<label for="brand">Enter brand: </label>
+		<input type="text" name="brand">
+		<label for="color">Enter color: </label>
+		<input type="text" name="color">
+		<label for="availability">Is Available: </label>
+		<select name="availability">
+			<option value="true">True</option>
+			<option value="false">False</option>
+		</select>
+		<br>
+		<button>Submit</button>
+	</form>
+
+	<script>
+		function hide(elem) {
+			if (elem.nextSibling.hidden) {
+				elem.innerHTML = String(elem.innerHTML).replace("🔼", "🔽");
+			}
+			else {
+				elem.innerHTML = String(elem.innerHTML).replace("🔽", "🔼");
+			}
+			while (elem = elem.nextSibling) {
+				elem.hidden = !elem.hidden;
+			}
+		}
+	</script>
+
+</body>
+
+</html>
