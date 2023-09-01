@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solve Sudoku</title>
+</head>
+<body>
+    <h1>Select A Sudoku:</h1>
+    <ul th:each="sudoku : ${sudokuList}">
+        <li th:text="${sudoku}"></li>
+        <form method="get" action="#" th:action="@{/sudoku/solve/{id}(id = ${sudoku})}">
+			<input type="submit" value="Solve">
+		</form>
+    </ul>
+
+    <a href="/sudoku/create">Create A New Sudoku</a>
+</body>
+</html>

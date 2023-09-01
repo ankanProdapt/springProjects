@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Create Sudoku</title>
+	<style>
+		input {
+			width: 20px;
+			height: 20px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Create Sudoku</h1>
+	<div>
+		<form id="grid" method="post" action="#" th:action="@{/sudoku/save}" th:object="${sudoku}">
+		</form>
+	</div>
+
+	<script>
+		let form = document.getElementById("grid");
+		for (let i = 0; i < 9; i++) {
+			for (let j = 0; j < 9; j++) {
+				let cell = document.createElement("input");
+				cell.type = "text";
+				let cellNo = i * 9 + j;
+				cell.name = cellNo.toString();
+				form.appendChild(cell);
+			}
+			form.appendChild(document.createElement("br"));
+		}
+		form.appendChild(document.createElement("br"));
+		let btn = document.createElement("button");
+		btn.innerHTML = "Create";
+		form.appendChild(btn);
+	</script>
+</body>
+
+</html>

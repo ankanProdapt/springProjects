@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solve Sudoku</title>
+    <style>
+        input {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Solve Sudoku</h1>
+    <div>
+        <form id="grid" method="post" action="#" th:action="@{/sudoku/validate}">
+        </form>
+        
+        <input type="text" id="gridData" hidden="true" th:value="${gridData}">
+    </div>
+
+    <script>
+        let form = document.getElementById("grid");
+        for(let i = 0; i < 9; i++){
+            for(let j = 0; j < 9; j++){
+                let cell = document.createElement("input");
+                cell.type = "text";
+                let cellNo = i * 9 + j;
+                cell.name = cellNo.toString();
+                cell.id = cellNo.toString();
+                form.appendChild(cell);
+            }
+            form.appendChild(document.createElement("br"));
+        }
+        form.appendChild(document.createElement("br"));
+        let btn = document.createElement("button");
+        btn.innerHTML = "Submit";
+        form.appendChild(btn);
+
+        let gridData = document.getElementById("gridData").getAttribute("value");
+        console.log(gridData);
+        for(let i = 0; i < 81; i++){
+            if(gridData[i] > 0)
+                document.getElementById(i).setAttribute("value", gridData[i]);
+        }
+    </script>
+</body>
+</html>
