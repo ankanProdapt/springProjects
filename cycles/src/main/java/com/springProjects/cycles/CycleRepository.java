@@ -1,12 +1,11 @@
 package com.springProjects.cycles;
 
-import java.util.List;
+import java.util.Optional;
 
-import org.hibernate.annotations.SQLUpdate;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 public interface CycleRepository extends CrudRepository<Cycle, Integer>{
-	@Query(value="SELECT * FROM cycle WHERE is_available = ?1", nativeQuery = true)
-	List<Cycle> findByAvailability(boolean isAvailable);
+    @Query(value = "SELECT * FROM cycle WHERE brand_id = ?1 AND is_available = true LIMIT 1", nativeQuery = true)
+    Optional<Cycle> findOneAvailableCycle(int brand_id);
 }
