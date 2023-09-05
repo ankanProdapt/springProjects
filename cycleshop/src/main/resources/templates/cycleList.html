@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>TalentSprint cycle shop</title>
+</head>
+<body>
+    <h1>Cycle shop</h1>
+    <table th:each="cycle : ${allCycles}">
+        <th>
+            <td>Brand</td>
+            <td>Stock available</td>
+        </th>
+        <tr>
+            <td th:text="${cycle.brand}">Brand</td>
+            <td th:text="${cycle.numAvailable}">0</td>
+            <td> 
+                <form action="#" th:action="@{./{id}/borrow(id=${cycle.id})}" method="get">
+                    <input type="text" name="count">
+                    <input type="submit" value="BORROW">
+                </form>
+                <form action="#" th:action="@{./{id}/return(id=${cycle.id})}" method="get">
+                    <input type="text" name="count">
+                    <input type="submit" value="RETURN">
+                </form>
+            </td>
+            <td>
+
+            </td>
+        </tr>
+    </table>
+</body>
