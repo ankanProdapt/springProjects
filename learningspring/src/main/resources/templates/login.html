@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>TalentSprint cycle shop</title>
+</head>
+<body>
+    <h1>Login!</h1>
+    <form method="post" action="#" th:action="@{/loginpage}" th:object="${user}">
+        <p th:text="${result}">Correct username and password</p>
+        <label for="username">Username</label><br>
+        <input type="text" name="username" id="username" th:field="*{name}">
+        <label for="password">Password</label><br>
+        <input type="password" name="password" id="password" th:field="*{password}">
+        <input type="submit" value="Login">
+    </form>
+</body>

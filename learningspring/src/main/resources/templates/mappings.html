@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>All mappings</h1>
+	<p th:each="entry : ${mappings}">
+		<span th:text="${entry.value}">Method address</span>
+		<span th:text="${entry.key} ?: '/'" >Mapped endpoints</span>
+	</p>
+</body>
+</html>
