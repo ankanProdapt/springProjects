@@ -6,14 +6,14 @@
 </head>
 <body>
     <h1>Login!</h1>
-    <form method="post" action="#" th:action="@{/register}" th:object="${userForm}">
+    <form method="post" action="#" th:action="@{/forum/register}" th:object="${registrationForm}">
         <p th:text="${message}">Correct username and password</p>
         <label for="username">Username</label><br>
-        <input type="text" name="username" id="username" th:field="*{name}"><br>
+        <input type="text" name="username" id="username" th:field="*{username}"><br>
         <label for="password">Password</label><br>
-        <input type="password" name="password" id="password" th:field="*{password}">
+        <input type="password" name="password" id="password" th:field="*{password}"><br>
         <label for="passwordrepeat">Repeat Password</label><br>
-        <input type="password" name="passwordrepeat" id="passwordrepeat" th:field="*{passwordRepeat}">
+        <input type="password" name="repeatPassword" id="repeatPassword" th:field="*{repeatPassword}"><br>
         <input type="submit" value="Register">
     </form>
 </body>

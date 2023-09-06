@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.prodapt.learningspring.Service.CommentService;
-import com.prodapt.learningspring.business.LoggedInUser;
-import com.prodapt.learningspring.business.NeedsAuth;
 import com.prodapt.learningspring.controller.binding.AddPostForm;
 import com.prodapt.learningspring.controller.exception.ResourceNotFoundException;
 import com.prodapt.learningspring.entity.LikeRecord;
@@ -26,57 +25,48 @@ import com.prodapt.learningspring.entity.Comment;
 import com.prodapt.learningspring.entity.LikeId;
 import com.prodapt.learningspring.entity.Post;
 import com.prodapt.learningspring.entity.User;
+import com.prodapt.learningspring.model.RegistrationForm;
 import com.prodapt.learningspring.repository.CommentRepository;
 import com.prodapt.learningspring.repository.LikeCRUDRepository;
 import com.prodapt.learningspring.repository.PostRepository;
 import com.prodapt.learningspring.repository.UserRepository;
+import com.prodapt.learningspring.service.CommentService;
+import com.prodapt.learningspring.service.DomainUserService;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.ServletException;
 
 @Controller
 @RequestMapping("/forum")
 public class ForumController {
-
-  @Autowired
-  private LoggedInUser loggedInUser;
-
-  @Autowired
-  private CommentService commentService;
   
   @Autowired
   private UserRepository userRepository;
   
   @Autowired
   private PostRepository postRepository;
-
+  
   @Autowired
-  private CommentRepository commentRepository;
+  private DomainUserService domainUserService;
   
   @Autowired
   private LikeCRUDRepository likeCRUDRepository;
   
-  private List<User> userList;
+  @Autowired
+  private CommentService commentService;
   
-  @PostConstruct
-  public void init() {
-    userList = new ArrayList<>();
-  }
+  @Autowired
+  private CommentRepository commentRepository;
   
   @GetMapping("/post/form")
-  public String getPostForm(Model model) {
-    if(this.loggedInUser.getLoggedInUser() == null){
-      return "redirect:/loginpage";
-    }
-    model.addAttribute("postForm", new AddPostForm());
-    // userRepository.findAll().forEach(user -> userList.add(user));
-    // model.addAttribute("userList", userList);
-    // model.addAttribute("authorid", 0);
+  public String getPostForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    AddPostForm postForm = new AddPostForm();
+    User author = domainUserService.getByName(userDetails.getUsername()).get();
+    postForm.setUserId(author.getId());
+    model.addAttribute("postForm", postForm);
     return "forum/postForm";
   }
   
   @PostMapping("/post/add")
-  @NeedsAuth(loginPage = "/loginpage")
   public String addNewPost(@ModelAttribute("postForm") AddPostForm postForm, BindingResult bindingResult, RedirectAttributes attr) throws ServletException {
     if (bindingResult.hasErrors()) {
       System.out.println(bindingResult.getFieldErrors());
@@ -84,7 +74,7 @@ public class ForumController {
       attr.addFlashAttribute("post", postForm);
       return "redirect:/forum/post/form";
     }
-    Optional<User> user = userRepository.findById(this.loggedInUser.getLoggedInUser().getId());
+    Optional<User> user = userRepository.findById(postForm.getUserId());
     if (user.isEmpty()) {
       throw new ServletException("Something went seriously wrong and we couldn't find the user in the DB");
     }
@@ -97,14 +87,12 @@ public class ForumController {
   }
   
   @GetMapping("/post/{id}")
-  @NeedsAuth(loginPage = "/loginpage")
   public String postDetail(@PathVariable int id, Model model) throws ResourceNotFoundException {
     Optional<Post> post = postRepository.findById(id);
     if (post.isEmpty()) {
       throw new ResourceNotFoundException("No post with the requested ID");
     }
     model.addAttribute("post", post.get());
-    model.addAttribute("userList", userList);
     int numLikes = likeCRUDRepository.countByLikeIdPost(post.get());
     model.addAttribute("likeCount", numLikes);
     List<Comment> comments = new ArrayList<>();
@@ -115,10 +103,10 @@ public class ForumController {
   }
   
   @PostMapping("/post/{id}/like")
-  @NeedsAuth(loginPage = "/loginpage")
-  public String postLike(@PathVariable int id, RedirectAttributes attr) {
+  public String postLike(@PathVariable int id, RedirectAttributes attr, @AuthenticationPrincipal UserDetails userDetails) {
     LikeId likeId = new LikeId();
-    likeId.setUser(userRepository.findById(this.loggedInUser.getLoggedInUser().getId()).get());
+    User user = domainUserService.getByName(userDetails.getUsername()).get();
+    likeId.setUser(userRepository.findByName(user.getName()).get());
     likeId.setPost(postRepository.findById(id).get());
     LikeRecord like = new LikeRecord();
     like.setLikeId(likeId);
@@ -126,11 +114,11 @@ public class ForumController {
     return String.format("redirect:/forum/post/%d", id);
   }
 
+
   @PostMapping("/post/{id}/comment")
-  @NeedsAuth(loginPage = "/loginpage")
-  public String addComment(@PathVariable int id, @RequestParam String content){
+  public String addComment(@PathVariable int id, @RequestParam String content, @AuthenticationPrincipal UserDetails userDetails){
     Comment comment = new Comment();
-    comment.setUser(userRepository.findById(this.loggedInUser.getLoggedInUser().getId()).get());
+    comment.setUser(domainUserService.getByName(userDetails.getUsername()).get());
     comment.setPost(postRepository.findById(id).get());
     comment.setContent(content);
     commentRepository.save(comment);
@@ -138,10 +126,9 @@ public class ForumController {
   }
 
   @PostMapping("/post/{id}/reply/{parentId}")
-  @NeedsAuth(loginPage = "/loginpage")
-  public String replyComment(@PathVariable int id, @PathVariable int parentId, @RequestParam String content){
+  public String addComment(@PathVariable int id, @PathVariable int parentId, @RequestParam String content, @AuthenticationPrincipal UserDetails userDetails){
     Comment comment = new Comment();
-    comment.setUser(userRepository.findById(this.loggedInUser.getLoggedInUser().getId()).get());
+    comment.setUser(domainUserService.getByName(userDetails.getUsername()).get());
     comment.setPost(postRepository.findById(id).get());
     comment.setParent(commentRepository.findById(parentId).get());
     comment.setLevel(commentRepository.findById(parentId).get().getLevel() + 1);
@@ -149,5 +136,35 @@ public class ForumController {
     commentRepository.save(comment);
     return String.format("redirect:/forum/post/%d", id);
   }
+
+
+
+  @GetMapping("/register")
+  public String getRegistrationForm(Model model) {
+    if (!model.containsAttribute("registrationForm")) {
+      model.addAttribute("registrationForm", new RegistrationForm());
+    }
+    return "forum/register";
+  }
+
+  @PostMapping("/register")
+  public String register(@ModelAttribute("registrationForm") RegistrationForm registrationForm, 
+  BindingResult bindingResult, 
+  RedirectAttributes attr) {
+    if (bindingResult.hasErrors()) {
+      attr.addFlashAttribute("org.springframework.validation.BindingResult.registrationForm", bindingResult);
+      attr.addFlashAttribute("registrationForm", registrationForm);
+      return "redirect:/register";
+    }
+    if (!registrationForm.isValid()) {
+      attr.addFlashAttribute("message", "Passwords must match");
+      attr.addFlashAttribute("registrationForm", registrationForm);
+      return "redirect:/register";
+    }
+    System.out.println(domainUserService.save(registrationForm.getUsername(), registrationForm.getPassword()));
+    attr.addFlashAttribute("result", "Registration success!");
+    return "redirect:/login";
+  }
+
   
 }

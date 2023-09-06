@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Greetings!</title>
+</head>
+<body>
+	<h1>Student list</h1>
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>Rank</th>
+			<th>Name</th>
+			<th>Score</th>
+			<th>Action</th>
+		</tr>
+		<tr th:each="student, studentStat : ${students}">
+			<div th:object="${student}">
+			<td th:text="*{id}">1</td>
+			<td th:text="*{rank}">1</td>
+			<td th:text="*{name}">Name</td>
+			<td th:text="*{score}">0</td>
+			<td>
+				<form method="post" action="#" th:action="@{/classroom/delete}">
+					<input type="hidden" name="idx" value="0" th:value="${studentStat.index}">
+					<input type="submit" value="DELETE">
+				</form>
+				<form method="get" action="#" th:action="@{/classroom/edit}">
+					<input type="hidden" name="id" value="0" th:value="*{id}">
+					<input type="submit" value="EDIT">
+				</form>
+			</td>
+			</div>
+		</tr>
+	</table>
+	<form method="post" action="#" th:action="@{/classroom/add}" th:object="${newStudent}">
+		
+		<label for="name">Student name</label>
+		<input type="text" id="name" th:field="*{name}">
+		<label for="score">Student score</label>
+		<input type="text" id="score" th:field="*{score}">
+		<div class="alert alert-warning" th:if="${#fields.hasErrors('score')}" th:errors="*{score}"></div>
+		<input type="submit" value="Add student">
+	</form>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Greetings!</title>
+</head>
+<body>
+	<form method="post" action="#" th:action="@{/classroom/edit}" th:object="${student}">
+		<input type="hidden" id="id" th:field="*{id}">
+		<label for="name">Student name</label>
+		<input type="text" id="name" th:field="*{name}">
+		<label for="score">Student score</label>
+		<input type="text" id="score" th:field="*{score}">
+		<div class="alert alert-warning" th:if="${#fields.hasErrors('score')}" th:errors="*{score}"></div>
+		<input type="submit" value="Edit student">
+	</form>
+</body>
+</html>
