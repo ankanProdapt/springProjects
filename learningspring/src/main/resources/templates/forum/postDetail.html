@@ -11,10 +11,19 @@
 		border-left: 2px solid black;
 		padding-left: 10px;
 	}
+	.userId {
+		color: blue;
+		font-weight: bold;
+	}
+	.italic {
+		font-style: italic;
+	}
 </style>
 </head>
 <body th:object="${post}">
-	<h1>Post by <span th:text="*{author.name}">John Doe</span></h1>
+	<h1><span th:text="${post.title}"></span></h1>
+	<h3 class="italic">Post by <span class="userId" th:text="*{author.name}">John Doe</span></h1>
+	<h3 class="italic">Updated at: <span th:text="${#calendars.format(post.updatedAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
 	<p th:text="*{content}">This is a post.</p>
 	<p>Likes: <span th:text="${likeCount}">0</span></p>
 	<form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
@@ -28,7 +37,7 @@
 	<ul th:each="comment : ${comments}">
 		<li th:class="${comment.level}">
 			<div class = "border">
-				<p th:text="${comment.user.name}"></p>
+				<p class="userId italic" th:text="${comment.user.name}"></p>
 				<p th:text="${comment.content}"></p>
 			</div>
 			<h5 onclick="toggleForm(this)">Reply ➡</h5>
@@ -41,7 +50,7 @@
 
 	<script>
 		function toggleForm(obj){
-			obj.nextSibling.nextSibling.hidden = !obj.nextSibling.nextSibling.hidden
+			obj.nextElementSibling.hidden = !obj.nextElementSibling.hidden
 		}
 		for(let i = 0; i < 100; i++){
 			comments = document.getElementsByClassName(i);

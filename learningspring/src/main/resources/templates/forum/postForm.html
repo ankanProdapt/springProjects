@@ -7,10 +7,12 @@
 <body>
 	<h1>Create a new post!</h1>
 	<form method="post" action="#" th:action="@{/forum/post/add}" th:object="${postForm}">
+		<label for="title">Title: </label>
+		<input id="title" name="title" th:field="*{title}" type="text"><br>
 		<label for="content">Content</label>
 		<textarea id="content" name="content" th:field="*{content}"></textarea>
-		<input type="hidden" th:field="*{userId}">
-		<input type="submit" value="Create!">
+		<input type="hidden" th:field="*{userId}"><br><br>
+		<input type="submit" value="Submit">
 	</form>
 </body>
 </html>

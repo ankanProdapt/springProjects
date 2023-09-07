@@ -80,6 +80,7 @@ public class ForumController {
     }
     Post post = new Post();
     post.setAuthor(user.get());
+    post.setTitle(postForm.getTitle());
     post.setContent(postForm.getContent());
     postRepository.save(post);
     
@@ -95,8 +96,9 @@ public class ForumController {
     model.addAttribute("post", post.get());
     int numLikes = likeCRUDRepository.countByLikeIdPost(post.get());
     model.addAttribute("likeCount", numLikes);
+    
     List<Comment> comments = new ArrayList<>();
-    commentRepository.findAll().forEach(comments::add);
+    commentRepository.findAllByPostId(id).forEach(comments::add);
     comments = commentService.preOrder(comments);
     model.addAttribute("comments", comments);
     return "forum/postDetail";
@@ -116,7 +118,8 @@ public class ForumController {
 
 
   @PostMapping("/post/{id}/comment")
-  public String addComment(@PathVariable int id, @RequestParam String content, @AuthenticationPrincipal UserDetails userDetails){
+  public String addComment(@PathVariable int id, @RequestParam String content, 
+                           @AuthenticationPrincipal UserDetails userDetails){
     Comment comment = new Comment();
     comment.setUser(domainUserService.getByName(userDetails.getUsername()).get());
     comment.setPost(postRepository.findById(id).get());

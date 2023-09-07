@@ -1,5 +1,10 @@
 package com.prodapt.learningspring.entity;
 
+import java.util.Date;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,10 +20,18 @@ public class Post {
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private int id;
+
+  private String title;
   
   private String content;
   
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "author_id", referencedColumnName = "id")
   private User author;
+
+  @CreationTimestamp
+  private Date createdAt;
+
+  @UpdateTimestamp
+  private Date updatedAt;
 }
