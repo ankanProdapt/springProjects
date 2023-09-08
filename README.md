@@ -56,6 +56,11 @@ D[Comment]--> E[Repositories]
 G[DTOs]-->I[Single Post view]
 ```
 
+# ER Diagram
+
+![image](https://github.com/ankanProdapt/springProjects/assets/139839100/889f8d3d-b225-41a8-a56c-51ca2527effd)
+
+
 ## Conclusion
 
 The Forum Application has addressed common usability issues and introduced new features to enhance the user experience. With the navigation bar and improved post viewing, users can now interact with the forum more efficiently. We remain committed to refining the application based on user feedback and continuously improving its features and functionality.
@@ -64,4 +69,6 @@ We appreciate your use of the Forum Application. If you have any questions or fe
 
 Thank you for your continued support!
 
-Team Members: Ameena, Ankan
+# Team Members: 
+-  **Ameena**
+-  **Ankan**
