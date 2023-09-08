@@ -36,9 +36,6 @@ public class Comment {
     private Comment parent;
 
     @Column
-    private int level;
-
-    @Column
     private String content;
 
     @CreationTimestamp

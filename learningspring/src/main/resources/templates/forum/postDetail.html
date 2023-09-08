@@ -3,50 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <title>Blog post</title>
-<style>
-	* {
-		list-style: none;
-	}
-	.border {
-		border-left: 2px solid black;
-		padding-left: 10px;
-	}
-	.userId {
-		color: blue;
-		font-weight: bold;
-	}
-	.italic {
-		font-style: italic;
-	}
-</style>
+<link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<body th:object="${post}">
-	<h1><span th:text="${post.title}"></span></h1>
-	<h3 class="italic">Post by <span class="userId" th:text="*{author.name}">John Doe</span></h1>
-	<h3 class="italic">Updated at: <span th:text="${#calendars.format(post.updatedAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
-	<p th:text="*{content}">This is a post.</p>
-	<p>Likes: <span th:text="${likeCount}">0</span></p>
-	<form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
-		<input type="submit" value="Like!">
-	</form>
-	<h3>Comments:</h3>
-	<form action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}" method="post">
-		<input name="content" type="text">
-		<input type="submit" value="Add Comment">
-	</form>
-	<ul th:each="comment : ${comments}">
-		<li th:class="${comment.level}">
-			<div class = "border">
-				<p class="userId italic" th:text="${comment.user.name}"></p>
-				<p th:text="${comment.content}"></p>
-			</div>
-			<h5 onclick="toggleForm(this)">Reply ➡</h5>
-			<form hidden="true" action="#" th:action="@{/forum/post/{id}/reply/{parentId}(id = ${post.id}, parentId = ${comment.id})}" method="post">
-				<input name="content" type="text">
-				<input type="submit" value="Submit">
-			</form>
-		</li>
-	</ul>
+<body>
+	<main th:object="${post}">
+		<header th:insert="forum/fragments.html :: navbar"></header>
+		<h2><span th:text="${post.title}"></span></h1>
+		<h3 class="italic">Post by <span class="userId" th:text="*{author.name}">John Doe</span></h1>
+		<h3 class="italic">Updated at: <span th:text="${#calendars.format(post.updatedAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
+		<p th:text="*{content}">This is a post.</p>
+		<p>Likes: <span th:text="${post.likesCount}">0</span></p>
+		<form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
+			<input type="submit" value="👍">
+		</form>
+		<h3>Comments:</h3>
+		<form action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}" method="post">
+			<input name="content" type="text">
+			<input type="submit" value="Add Comment">
+		</form>
+		<ul th:each="comment : ${comments}">
+			<li th:class="${comment.level}">
+				<div class = "border">
+					<p class="userId italic" th:text="${comment.user.name}"></p>
+					<p th:text="${comment.content}"></p>
+				</div>
+				<h5 onclick="toggleForm(this)">Reply ➡</h5>
+				<form hidden="true" action="#" th:action="@{/forum/post/{id}/reply/{parentId}(id = ${post.id}, parentId = ${comment.id})}" method="post">
+					<input name="content" type="text">
+					<input type="submit" value="Submit">
+				</form>
+			</li>
+		</ul>
+	</main>
 
 	<script>
 		function toggleForm(obj){
@@ -59,5 +47,9 @@
 			}
 		}
 	</script>
+	<script>
+        const symbol = document.querySelector(".name").innerText.charAt(0).toUpperCase();
+        document.querySelector(".avatar-text").innerHTML = symbol;
+    </script>
 </body>
 </html>

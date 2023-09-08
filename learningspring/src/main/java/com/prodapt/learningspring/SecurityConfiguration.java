@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 import com.prodapt.learningspring.service.CustomUserDetailsService;
 
@@ -27,12 +26,13 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
             .authorizeHttpRequests((requests) -> requests
-            .requestMatchers("/forum/register").permitAll()
+            .requestMatchers("/forum/register", "/error", "/css/**", "/forum/post/all").permitAll()
             .anyRequest().authenticated())
-            .logout(withDefaults())
-            .formLogin(withDefaults());
+            .formLogin((login) -> login.loginProcessingUrl("/login").defaultSuccessUrl("/forum/post/all", true))
+            .logout((logout) -> logout.logoutUrl("/logout").logoutSuccessUrl("/forum/post/all"));
         
         return http.build();
+
     }
 
 }
