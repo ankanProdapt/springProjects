@@ -1,6 +1,6 @@
 package com.prodapt.learningspring.controller;
 
-import java.util.ArrayList;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.prodapt.learningspring.controller.binding.AddPostForm;
 import com.prodapt.learningspring.controller.exception.ResourceNotFoundException;
+import com.prodapt.learningspring.dto.PostDTO;
 import com.prodapt.learningspring.entity.LikeRecord;
 import com.prodapt.learningspring.entity.Comment;
 import com.prodapt.learningspring.entity.LikeId;
@@ -32,6 +33,7 @@ import com.prodapt.learningspring.repository.PostRepository;
 import com.prodapt.learningspring.repository.UserRepository;
 import com.prodapt.learningspring.service.CommentService;
 import com.prodapt.learningspring.service.DomainUserService;
+import com.prodapt.learningspring.service.PostService;
 
 import jakarta.servlet.ServletException;
 
@@ -43,17 +45,20 @@ public class ForumController {
   private UserRepository userRepository;
   
   @Autowired
-  private PostRepository postRepository;
-  
-  @Autowired
   private DomainUserService domainUserService;
   
   @Autowired
   private LikeCRUDRepository likeCRUDRepository;
+
+  @Autowired
+  private PostService postService;
+
+  @Autowired
+  private PostRepository postRepository;
   
   @Autowired
   private CommentService commentService;
-  
+
   @Autowired
   private CommentRepository commentRepository;
   
@@ -65,6 +70,17 @@ public class ForumController {
     model.addAttribute("postForm", postForm);
     return "forum/postForm";
   }
+
+  @GetMapping("/post/all")
+	public String getallPosts(Model model, Principal principal) {
+    List<PostDTO> posts = postService.findAll();
+    model.addAttribute("isLoggedIn", principal != null);
+    if(principal != null){
+      model.addAttribute("username", principal.getName());
+    }
+		model.addAttribute("posts", posts);
+		return "forum/allPosts";
+	}
   
   @PostMapping("/post/add")
   public String addNewPost(@ModelAttribute("postForm") AddPostForm postForm, BindingResult bindingResult, RedirectAttributes attr) throws ServletException {
@@ -88,19 +104,14 @@ public class ForumController {
   }
   
   @GetMapping("/post/{id}")
-  public String postDetail(@PathVariable int id, Model model) throws ResourceNotFoundException {
-    Optional<Post> post = postRepository.findById(id);
-    if (post.isEmpty()) {
-      throw new ResourceNotFoundException("No post with the requested ID");
+  public String postDetail(@PathVariable int id, Model model, Principal principal) throws ResourceNotFoundException {
+    model.addAttribute("isLoggedIn", principal != null);
+    if(principal != null){
+      model.addAttribute("username", principal.getName());
     }
-    model.addAttribute("post", post.get());
-    int numLikes = likeCRUDRepository.countByLikeIdPost(post.get());
-    model.addAttribute("likeCount", numLikes);
-    
-    List<Comment> comments = new ArrayList<>();
-    commentRepository.findAllByPostId(id).forEach(comments::add);
-    comments = commentService.preOrder(comments);
-    model.addAttribute("comments", comments);
+    PostDTO post = postService.findById(id);
+    model.addAttribute("post", post);
+    model.addAttribute("comments", commentService.findAllByPostId(id));
     return "forum/postDetail";
   }
   
@@ -134,7 +145,6 @@ public class ForumController {
     comment.setUser(domainUserService.getByName(userDetails.getUsername()).get());
     comment.setPost(postRepository.findById(id).get());
     comment.setParent(commentRepository.findById(parentId).get());
-    comment.setLevel(commentRepository.findById(parentId).get().getLevel() + 1);
     comment.setContent(content);
     commentRepository.save(comment);
     return String.format("redirect:/forum/post/%d", id);

@@ -1,0 +1,121 @@
+* {
+    list-style: none;
+}
+.border {
+    border-left: 2px solid black;
+    padding-left: 10px;
+}
+.userId {
+    color: blue;
+    font-weight: bold;
+}
+.italic {
+    font-style: italic;
+}
+/* We don't want any links to be underlined. Let's remove that globally */
+a {
+text-decoration: none;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+}
+
+main {
+    padding-top: calc(4rem + 10px);
+}
+
+.navbar {
+    background-color: blue;
+    display: flex;
+    /* let's align the items so everything is nice and centered */
+    margin: 0;
+    width: 100%;
+    align-items: center;
+}
+
+/* We want all links in the navbar to be #e7e7e7 */
+.navbar a {
+    color: #e7e7e7;
+}
+
+.navbar ul {
+    /* Let's reset the margin and padding of the list so it's is flush. */
+    margin: 0;
+    padding: 0;
+    /* Let's remove the bullet points */
+    list-style-type: none;
+    /* display the list flex and align the items centered */
+    display: flex;
+    align-items:center;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.navbar .brand {
+    /*Let's make the anchor display block.
+        This will ensure when we get the full width of the container.
+    */
+    display: block;
+    color: #e7e7e7;
+    /* Remove padding from top/bottom and add 24px padding right/left */
+    padding: 0 24px;
+    font-size: 24px;
+}
+
+.navbar ul li a {
+    color: #e7e7e7;
+    padding: 24px;
+    /*Let's make the anchor display block.
+        This will ensure when we hover, focus, or is active we get the full width and height 
+        of the container.
+    */
+    display: block;
+}
+
+/* When a user hovers, focuses or if the link is active change the background */
+.navbar ul a:hover,
+.navbar ul a:focus,
+.navbar ul .active {
+    background-color: #272727;
+}
+
+.user-details-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-details-wrapper:hover {
+    cursor: pointer;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    cursor: pointer;
+}
+
+.user-details-wrapper .user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    background-color: tomato;
+}
+
+.user-details .name {
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: capitalize;
+    color: white;
+}
