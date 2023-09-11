@@ -16,10 +16,10 @@
             <h1>All Posts</h1>
             <div class="post" th:each="post :${posts}">
                     <a th:href="@{/forum/post/{id}(id = ${post.id})}">
-                        <h2><span th:text="${post.title}"></span></h2>
+                        <h1><span th:text="${post.title}"></span></h1>
                     </a>
-                    <h3 class="italic">Post by <span class="userId" th:text="${post.author.name}">John Doe</span></h1>
-                    <h3 class="italic">Updated at: <span th:text="${#calendars.format(post.updatedAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
+                    <h3 class="italic">Post by <span class="userId" th:text="${post.author.name}">John Doe</span></h3>
+                    <h5 class="italic">Updated <span class="createdAt" th:attr="data-datetime=${post.createdAt}"></span></h5>
                     <p th:text="${post.content}">This is a post.</p>
                     <form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
                         <button class="transparent-btn" type="submit">
@@ -28,7 +28,7 @@
                         <span th:text="${post.likesCount}">0</span>
                     </form>
                     <a th:href="@{/forum/post/{id}(id = ${post.id})}">
-                        <h2><span th:text="${post.commentsCount}"></span> Comments</h1>
+                        <h4><span th:text="${post.commentsCount}"></span> Comments</h4>
                     </a>
                     <form action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}" method="post">
                         <input name="content" type="text">
@@ -52,6 +52,15 @@
             console.log(obj);
             obj.setAttribute("value", document.getElementsByClassName("post").length + 5);
         }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script>
+      // Initialize timeago.js
+      const timeElements = document.querySelectorAll(".createdAt");
+      timeElements.forEach((el) => {
+        const datetime = el.getAttribute("data-datetime");
+        el.innerHTML = moment(datetime).fromNow();
+      });
     </script>
 </body>
 </html>

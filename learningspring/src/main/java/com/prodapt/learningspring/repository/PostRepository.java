@@ -11,9 +11,7 @@ public interface PostRepository extends CrudRepository<Post, Integer>{
     @Query(value = "SELECT * FROM post LIMIT ?1", nativeQuery = true)
     List<Post> findAllLimitBy(int limit);
 
-    @Query(value = "SELECT COUNT(*) FROM post WHERE post.author_id = ?1 AND DATE(post.created_at) = DATE(NOW())", nativeQuery = true)
-    int CountPostsCreatedTodayBy(int id);
+    @Query(value = "SELECT * FROM post WHERE LOWER(CONCAT(post.title, post.content)) LIKE CONCAT('%', ?1, '%')", nativeQuery = true)
+    List<Post> searchPostsByPattern(String text);
 
-    @Query(value = "SELECT COUNT(*) FROM post WHERE post.author_id = ?1 AND MONTH(post.created_at) =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 MONTH(NOW())", nativeQuery = true)
-    int CountPostsCreatedInThisMonthBy(int id);
 }

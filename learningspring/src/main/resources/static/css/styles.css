@@ -33,12 +33,13 @@ main {
 }
 
 .navbar {
-    background-color: #14397d;
+    background-color: #14397df7;
     display: flex;
     /* let's align the items so everything is nice and centered */
     margin: 0;
     width: 100%;
     align-items: center;
+    
 }
 
 /* We want all links in the navbar to be #e7e7e7 */
@@ -50,6 +51,7 @@ main {
     /* Let's reset the margin and padding of the list so it's is flush. */
     margin: 0;
     padding: 0;
+    padding-right: 50px;
     /* Let's remove the bullet points */
     list-style-type: none;
     /* display the list flex and align the items centered */
@@ -144,6 +146,8 @@ input[type="submit"]:hover {
     padding-left: 50px;
     padding-right: 50px;
     padding-bottom: 30px;
+    border-radius: 10%;
+    width: 300px;
 }
 
 .transparent-btn {

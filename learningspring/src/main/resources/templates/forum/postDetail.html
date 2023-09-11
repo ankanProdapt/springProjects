@@ -12,9 +12,9 @@
 <body>
 	<main th:object="${post}">
 		<header th:insert="forum/fragments.html :: navbar"></header>
-		<h2><span th:text="${post.title}"></span></h2>
-		<h3 class="italic">Post by <span class="userId" th:text="*{author.name}">John Doe</span></h1>
-		<h3 class="italic">Updated at: <span th:text="${#calendars.format(post.updatedAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
+		<h1><span th:text="${post.title}"></span></h1>
+		<h3 class="italic">Post by <span class="userId" th:text="*{author.name}">John Doe</span></h3>
+		<h5 class="italic">Updated <span class="createdAt" th:attr="data-datetime=${post.createdAt}"></span></h5>
 		<p th:text="*{content}">This is a post.</p>
 		<form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
 			<button class="transparent-btn" type="submit">
@@ -22,7 +22,7 @@
 			</button>
 			<span th:text="${post.likesCount}">0</span>
 		</form>
-		<h3>Comments:</h3>
+		<h4>Comments:</h4>
 		<form action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}" method="post">
 			<input name="content" type="text">
 			<input type="submit" value="Add Comment">
@@ -68,6 +68,15 @@
             console.log(obj);
             obj.setAttribute("value", document.getElementsByClassName("content").length + 5);
         }
+    </script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script>
+      // Initialize timeago.js
+      const timeElements = document.querySelectorAll(".createdAt");
+      timeElements.forEach((el) => {
+        const datetime = el.getAttribute("data-datetime");
+        el.innerHTML = moment(datetime).fromNow();
+      });
     </script>
 </body>
 </html>

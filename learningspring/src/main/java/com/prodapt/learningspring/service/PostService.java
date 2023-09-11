@@ -44,6 +44,10 @@ public class PostService {
         return convert((List<Post>) postRepository.findAllLimitBy(limit));
     }
 
+    public List<PostDTO> searchPostsByPattern(String text){
+        return convert((List<Post>) postRepository.searchPostsByPattern(text));
+    }
+
     public List<PostDTO> convert(List<Post> postList){
         List<PostDTO> posts = new ArrayList<>();
 

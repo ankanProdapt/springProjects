@@ -3,16 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <title>New Post Form</title>
+<link rel="stylesheet" th:href="@{/css/styles.css}">
+<style>
+	form {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+</style>
 </head>
 <body>
-	<h1>Create a new post!</h1>
-	<form method="post" action="#" th:action="@{/forum/post/add}" th:object="${postForm}">
-		<label for="title">Title: </label>
-		<input id="title" name="title" th:field="*{title}" type="text"><br>
-		<label for="content">Content</label>
-		<textarea id="content" name="content" th:field="*{content}"></textarea>
-		<input type="hidden" th:field="*{userId}"><br><br>
-		<input type="submit" value="Submit">
-	</form>
+	<main>
+		<header th:insert="forum/fragments.html :: navbar"></header>
+		<div class="posts">
+			<h1>Create a new post!</h1>
+			<form method="post" action="#" th:action="@{/forum/post/add}" th:object="${postForm}">
+				<label for="title"><h3>Title</h3></label>
+				<input id="title" name="title" th:field="*{title}" type="text" style="width: 400px;"><br>
+				<label for="content"><h3>Content</h3></label>
+				<textarea id="content" name="content" th:field="*{content}" style="width: 500px; height: 100px;"></textarea>
+				<input type="hidden" th:field="*{userId}"><br><br>
+				<input type="submit" value="Submit">
+			</form>
+		</div>
+	</main>
 </body>
 </html>

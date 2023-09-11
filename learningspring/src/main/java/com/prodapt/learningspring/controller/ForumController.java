@@ -231,13 +231,24 @@ public class ForumController {
   }
 
   @PostMapping("/notification/{notificationId}")
-    public String handleNotificationForm(@PathVariable("notificationId") int postId) {
+  public String handleNotificationForm(@PathVariable("notificationId") int postId) {
+      System.out.println("Received notification ID: " + postId);
+      System.out.println("----------------------------------------");
+      return String.format("redirect:/forum/post/%d", postId); 
+  }
 
-        System.out.println("Received notification ID: " + postId);
-        System.out.println("----------------------------------------");
-      
-        return String.format("redirect:/forum/post/%d", postId); 
+  @GetMapping("/search")
+  public String search(Model model, Principal principal, @RequestParam(name = "search", defaultValue = "") String text){
+    model.addAttribute("isLoggedIn", principal != null);
+    if(principal != null){
+      model.addAttribute("username", principal.getName());
     }
+    List<PostDTO> posts = postService.searchPostsByPattern(text.toLowerCase());
+    System.out.println(posts);
+    model.addAttribute("posts", posts);
+    return "forum/allPosts";
+  }
+
 
   
 }
