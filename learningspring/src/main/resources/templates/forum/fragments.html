@@ -20,7 +20,12 @@
                     <a th:href="@{/forum/profile}">Profile</a>
                 </li>
                 <li>
-                    <a th:href="@{/logout}">Logout</a>
+                    <form action="#" method="get" th:action="@{/forum/search}">
+                        <input type="text" class="search-bar" placeholder="Search.." name="search">
+                      </form>
+                </li>
+                <li>
+                    <a th:href="@{/forum/notifications}">🔔</a>
                 </li>
                 <li>
                     <div class="user-details-wrapper">

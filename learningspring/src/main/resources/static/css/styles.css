@@ -119,3 +119,9 @@ input[type="submit"]:hover {
     text-transform: capitalize;
     color: white;
 }
+
+.search-bar {
+    width: 200px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}

@@ -22,6 +22,7 @@ import com.prodapt.learningspring.controller.binding.AddPostForm;
 import com.prodapt.learningspring.controller.exception.ResourceNotFoundException;
 import com.prodapt.learningspring.dto.PostDTO;
 import com.prodapt.learningspring.entity.LikeRecord;
+import com.prodapt.learningspring.entity.Notification;
 import com.prodapt.learningspring.entity.Comment;
 import com.prodapt.learningspring.entity.LikeId;
 import com.prodapt.learningspring.entity.Post;
@@ -33,6 +34,7 @@ import com.prodapt.learningspring.repository.PostRepository;
 import com.prodapt.learningspring.repository.UserRepository;
 import com.prodapt.learningspring.service.CommentService;
 import com.prodapt.learningspring.service.DomainUserService;
+import com.prodapt.learningspring.service.NotificationService;
 import com.prodapt.learningspring.service.PostService;
 
 import jakarta.servlet.ServletException;
@@ -58,6 +60,9 @@ public class ForumController {
   
   @Autowired
   private CommentService commentService;
+
+  @Autowired
+  private NotificationService notificationService;
 
   @Autowired
   private CommentRepository commentRepository;
@@ -99,6 +104,8 @@ public class ForumController {
     post.setTitle(postForm.getTitle());
     post.setContent(postForm.getContent());
     postRepository.save(post);
+
+    notificationService.createNotification(user.get(), post, "POST", "You added a post (" + postForm.getTitle() + ").");
     
     return String.format("redirect:/forum/post/%d", post.getId());
   }
@@ -119,11 +126,18 @@ public class ForumController {
   public String postLike(@PathVariable int id, RedirectAttributes attr, @AuthenticationPrincipal UserDetails userDetails) {
     LikeId likeId = new LikeId();
     User user = domainUserService.getByName(userDetails.getUsername()).get();
+    Post post = postRepository.findById(id).get();
     likeId.setUser(userRepository.findByName(user.getName()).get());
-    likeId.setPost(postRepository.findById(id).get());
+    likeId.setPost(post);
     LikeRecord like = new LikeRecord();
     like.setLikeId(likeId);
     likeCRUDRepository.save(like);
+    if(userRepository.findByName(userDetails.getUsername()).get().equals(post.getAuthor())){
+      notificationService.createNotification(postRepository.findById(id).get().getAuthor(), postRepository.findById(id).get(), "LIKE", "you, liked your post (" + postRepository.findById(id).get().getTitle() + ").");
+    }
+    else{
+      notificationService.createNotification(postRepository.findById(id).get().getAuthor(), postRepository.findById(id).get(), "LIKE", userDetails.getUsername() + " liked your post (" + postRepository.findById(id).get().getTitle() + ").");
+    }
     return String.format("redirect:/forum/post/%d", id);
   }
 
@@ -131,22 +145,38 @@ public class ForumController {
   @PostMapping("/post/{id}/comment")
   public String addComment(@PathVariable int id, @RequestParam String content, 
                            @AuthenticationPrincipal UserDetails userDetails){
+    Post post = postRepository.findById(id).get();
+    int postId = post.getId();
     Comment comment = new Comment();
     comment.setUser(domainUserService.getByName(userDetails.getUsername()).get());
-    comment.setPost(postRepository.findById(id).get());
+    comment.setPost(post);
     comment.setContent(content);
     commentRepository.save(comment);
+    if(userRepository.findByName(userDetails.getUsername()).get().equals(post.getAuthor())){
+      notificationService.createNotification(postRepository.findById(postId).get().getAuthor(), post, "COMMENT",  "You, commented on your post (" + post.getTitle() + ").");
+    }
+    else{
+      notificationService.createNotification(postRepository.findById(postId).get().getAuthor(), post, "COMMENT", userDetails.getUsername() + ", commented on your post (" + post.getTitle() + ").");
+    }
     return String.format("redirect:/forum/post/%d", id);
   }
 
   @PostMapping("/post/{id}/reply/{parentId}")
-  public String addComment(@PathVariable int id, @PathVariable int parentId, @RequestParam String content, @AuthenticationPrincipal UserDetails userDetails){
+  public String addComment(@PathVariable int id, @PathVariable int parentId, 
+                           @RequestParam String content, @AuthenticationPrincipal UserDetails userDetails){
+    Post post = postRepository.findById(id).get();
     Comment comment = new Comment();
     comment.setUser(domainUserService.getByName(userDetails.getUsername()).get());
-    comment.setPost(postRepository.findById(id).get());
+    comment.setPost(post);
     comment.setParent(commentRepository.findById(parentId).get());
     comment.setContent(content);
     commentRepository.save(comment);
+    if(userRepository.findByName(userDetails.getUsername()).get().equals(post.getAuthor())){
+      notificationService.createNotification(commentRepository.findById(parentId).get().getUser(), post, "REPLY", "You, replied on your comment (" + commentRepository.findById(parentId).get().getContent() + ").");
+     }
+    else{
+      notificationService.createNotification(commentRepository.findById(parentId).get().getUser(), post, "REPLY", userDetails.getUsername() + " replied on your comment (" + commentRepository.findById(parentId).get().getContent() + ").");
+    }
     return String.format("redirect:/forum/post/%d", id);
   }
 
@@ -178,6 +208,33 @@ public class ForumController {
     attr.addFlashAttribute("result", "Registration success!");
     return "redirect:/login";
   }
+
+  @GetMapping("/notifications")
+  public String notificationPage( Model model, @AuthenticationPrincipal UserDetails userDetails, Principal principal) throws ResourceNotFoundException{
+   // List<Notification> notificationList = notificationRepository.findAll();
+
+   model.addAttribute("isLoggedIn", principal != null);
+    if(principal != null){
+      model.addAttribute("username", principal.getName());
+    }
+
+   User user = userRepository.findByName(userDetails.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    System.out.println("inside get of notification");
+
+    List<Notification> notificationList = notificationService.getNotificationsForUser(user);
+    System.out.println(notificationList.toString());
+    model.addAttribute("notificationList", notificationList);
+    return "forum/notification";
+  }
+
+  @PostMapping("/notification/{notificationId}")
+    public String handleNotificationForm(@PathVariable("notificationId") int postId) {
+
+        System.out.println("Received notification ID: " + postId);
+        System.out.println("----------------------------------------");
+      
+        return String.format("redirect:/forum/post/%d", postId); 
+    }
 
   
 }
