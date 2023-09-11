@@ -1,6 +1,11 @@
 * {
     list-style: none;
 }
+
+body {
+    background-color: #d7eaf3;
+}
+
 .border {
     border-left: 2px solid black;
     padding-left: 10px;
@@ -28,7 +33,7 @@ main {
 }
 
 .navbar {
-    background-color: blue;
+    background-color: #14397d;
     display: flex;
     /* let's align the items so everything is nice and centered */
     margin: 0;
@@ -124,4 +129,28 @@ input[type="submit"]:hover {
     width: 200px;
     padding: 10px;
     border: 1px solid #ccc;
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.post {
+    background-color: #77b5d9;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 30px;
+}
+
+.transparent-btn {
+    background-color: transparent;
+    border: none;
+}
+
+.transparent-btn:hover {
+    background-color: rgba(10, 10, 10, 5%);
 }

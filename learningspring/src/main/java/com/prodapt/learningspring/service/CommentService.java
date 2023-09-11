@@ -21,8 +21,8 @@ public class CommentService {
     private Map<Integer, List<Comment>> commentTree;
     private Map<Integer, Integer> level;
 
-    public List<CommentDTO> findAllByPostId(int id){
-        return preOrder((List<Comment>) commentRepository.findAllByPostId(id));
+    public List<CommentDTO> findAllByPostIdLimitBy(int id, int limit){
+        return preOrder((List<Comment>) commentRepository.findAllByPostIdLimitBy(id, limit));
     }
 
     public List<CommentDTO> preOrder(List<Comment> comments){

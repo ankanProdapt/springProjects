@@ -38,20 +38,20 @@ button {
 </style>
 </head>
 <body>
-    <header th:insert="forum/fragments.html :: navbar"></header>
-
-    <h1>Notifications</h1>
-
-    <div class="notification-container">
-        <div th:each="notification : ${notificationList}" class="notification">
-            <form method="post" action="#" th:action="@{'/forum/notification/' + ${notification.post.id}}">
-            <!-- <form > -->
-                <button th:text="${notification.message}" type="submit" th:id="${notification.id}" class="notification-button">
-                    <!-- <p th:text="${notification.message}"></p> -->
-                </button>
-            </form>
+    <main>
+        <header th:insert="forum/fragments.html :: navbar"></header>
+        <h1>Notifications</h1>
+        <div class="notification-container">
+            <div th:each="notification : ${notificationList}" class="notification">
+                <form method="post" action="#" th:action="@{'/forum/notification/' + ${notification.post.id}}">
+                <!-- <form > -->
+                    <button th:text="${notification.message}" type="submit" th:id="${notification.id}" class="notification-button">
+                        <!-- <p th:text="${notification.message}"></p> -->
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
+    </main>
     
     <script>
         const symbol = document.querySelector(".name").innerText.charAt(0).toUpperCase();

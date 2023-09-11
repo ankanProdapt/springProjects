@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Blog post</title>
-<link rel="stylesheet" th:href="@{/css/styles.css}">
+	<meta charset="UTF-8">
+	<title>Blog post</title>
+	<script
+		src="https://kit.fontawesome.com/70f63a8d9c.js"
+		crossorigin="anonymous">
+	</script>
+	<link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 	<main th:object="${post}">
 		<header th:insert="forum/fragments.html :: navbar"></header>
-		<h2><span th:text="${post.title}"></span></h1>
+		<h2><span th:text="${post.title}"></span></h2>
 		<h3 class="italic">Post by <span class="userId" th:text="*{author.name}">John Doe</span></h1>
 		<h3 class="italic">Updated at: <span th:text="${#calendars.format(post.updatedAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
 		<p th:text="*{content}">This is a post.</p>
-		<p>Likes: <span th:text="${post.likesCount}">0</span></p>
 		<form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
-			<input type="submit" value="👍">
+			<button class="transparent-btn" type="submit">
+				<i class="fa-solid fa-heart" style="color: #e01b24;"></i>
+			</button>
+			<span th:text="${post.likesCount}">0</span>
 		</form>
 		<h3>Comments:</h3>
 		<form action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}" method="post">
@@ -25,7 +31,7 @@
 			<li th:class="${comment.level}">
 				<div class = "border">
 					<p class="userId italic" th:text="${comment.user.name}"></p>
-					<p th:text="${comment.content}"></p>
+					<p class="content" th:text="${comment.content}"></p>
 				</div>
 				<h5 onclick="toggleForm(this)">Reply ➡</h5>
 				<form hidden="true" action="#" th:action="@{/forum/post/{id}/reply/{parentId}(id = ${post.id}, parentId = ${comment.id})}" method="post">
@@ -34,6 +40,13 @@
 				</form>
 			</li>
 		</ul>
+		<form action="#" th:action="@{/forum/post/{id}(id = ${post.id})}" method="get">
+			<input id="limit" type="text" name="limit" hidden="true">
+			<button onclick="incrementCount()" class="transparent-btn">
+				Load More Comments...
+			</button>
+		</form>
+
 	</main>
 
 	<script>
@@ -46,10 +59,15 @@
 				comment.style.paddingLeft = 50*i + "px";
 			}
 		}
-	</script>
-	<script>
+
         const symbol = document.querySelector(".name").innerText.charAt(0).toUpperCase();
         document.querySelector(".avatar-text").innerHTML = symbol;
+
+		function incrementCount(){
+            let obj = document.getElementById("limit");
+            console.log(obj);
+            obj.setAttribute("value", document.getElementsByClassName("content").length + 5);
+        }
     </script>
 </body>
 </html>

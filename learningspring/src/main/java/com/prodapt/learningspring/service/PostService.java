@@ -40,8 +40,8 @@ public class PostService {
         return convert(postRepository.findById(id).get());
     }
 
-    public List<PostDTO> findAll(){
-        return convert((List<Post>) postRepository.findAll());
+    public List<PostDTO> findAllLimitBy(int limit){
+        return convert((List<Post>) postRepository.findAllLimitBy(limit));
     }
 
     public List<PostDTO> convert(List<Post> postList){

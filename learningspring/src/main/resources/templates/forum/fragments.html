@@ -11,6 +11,9 @@
         <nav class="navbar">
             <ul>
                 <li>
+                    <a th:href="@{/forum/home}">Home</a>
+                </li>
+                <li>
                     <a th:href="@{/forum/post/all}">All Posts</a>
                 </li>
                 <li>
@@ -22,7 +25,7 @@
                 <li>
                     <form action="#" method="get" th:action="@{/forum/search}">
                         <input type="text" class="search-bar" placeholder="Search.." name="search">
-                      </form>
+                    </form>
                 </li>
                 <li>
                     <a th:href="@{/forum/notifications}">🔔</a>

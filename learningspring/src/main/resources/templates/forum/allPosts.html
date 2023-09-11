@@ -1,39 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Blog post</title>
-<link rel="stylesheet" th:href="@{/css/styles.css}">
+    <meta charset="UTF-8">
+    <title>Blog post</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script
+		src="https://kit.fontawesome.com/70f63a8d9c.js"
+		crossorigin="anonymous">
+	</script>
 </head>
 <body>
     <main>
         <header th:insert="forum/fragments.html :: navbar"></header>
-	    <h1>All Posts</h1>
-        <div class="posts" th:each="post :${posts}">
-            <div class="post">
-                <a th:href="@{/forum/post/{id}(id = ${post.id})}">
-                    <h2><span th:text="${post.title}"></span></h2>
-                </a>
-                <h3 class="italic">Post by <span class="userId" th:text="${post.author.name}">John Doe</span></h1>
-                <h3 class="italic">Updated at: <span th:text="${#calendars.format(post.updatedAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
-                <p th:text="${post.content}">This is a post.</p>
-                <p>Likes: <span th:text="${post.likesCount}"></span></p>
-                <form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
-                    <input type="submit" value="👍">
-                </form>
-                <a th:href="@{/forum/post/{id}(id = ${post.id})}">
-                    <h2><span th:text="${post.commentsCount}"></span> Comments</h1>
-                </a>
-                <form action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}" method="post">
-                    <input name="content" type="text">
-                    <input type="submit" value="Add Comment">
-                </form>
+        <div class="posts">
+            <h1>All Posts</h1>
+            <div class="post" th:each="post :${posts}">
+                    <a th:href="@{/forum/post/{id}(id = ${post.id})}">
+                        <h2><span th:text="${post.title}"></span></h2>
+                    </a>
+                    <h3 class="italic">Post by <span class="userId" th:text="${post.author.name}">John Doe</span></h1>
+                    <h3 class="italic">Updated at: <span th:text="${#calendars.format(post.updatedAt, 'dd/MMM/yyyy HH:mm z')}"></span></h3>
+                    <p th:text="${post.content}">This is a post.</p>
+                    <form method="post" action="#" th:action="@{/forum/post/{id}/like(id = ${post.id})}">
+                        <button class="transparent-btn" type="submit">
+                            <i class="fa-solid fa-heart" style="color: #e01b24;"></i>
+                        </button>
+                        <span th:text="${post.likesCount}">0</span>
+                    </form>
+                    <a th:href="@{/forum/post/{id}(id = ${post.id})}">
+                        <h2><span th:text="${post.commentsCount}"></span> Comments</h1>
+                    </a>
+                    <form action="#" th:action="@{/forum/post/{id}/comment(id = ${post.id})}" method="post">
+                        <input name="content" type="text">
+                        <input type="submit" value="Add Comment">
+                    </form>
             </div>
+            <form action="#" th:action="@{/forum/post/all}" method="get">
+                <input id="limit" type="text" name="limit" hidden="true">
+                <button onclick="incrementCount()" class="transparent-btn">
+                    Load More
+                </button>
+            </form>
         </div>
     </main>
     <script>
         const symbol = document.querySelector(".name").innerText.charAt(0).toUpperCase();
         document.querySelector(".avatar-text").innerHTML = symbol;
+
+        function incrementCount(){
+            let obj = document.getElementById("limit");
+            console.log(obj);
+            obj.setAttribute("value", document.getElementsByClassName("post").length + 5);
+        }
     </script>
 </body>
 </html>

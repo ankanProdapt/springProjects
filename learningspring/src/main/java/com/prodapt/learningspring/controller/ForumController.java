@@ -77,8 +77,8 @@ public class ForumController {
   }
 
   @GetMapping("/post/all")
-	public String getallPosts(Model model, Principal principal) {
-    List<PostDTO> posts = postService.findAll();
+	public String getallPosts(Model model, Principal principal, @RequestParam(name="limit", defaultValue = "5") int limit) {
+    List<PostDTO> posts = postService.findAllLimitBy(limit);
     model.addAttribute("isLoggedIn", principal != null);
     if(principal != null){
       model.addAttribute("username", principal.getName());
@@ -111,14 +111,17 @@ public class ForumController {
   }
   
   @GetMapping("/post/{id}")
-  public String postDetail(@PathVariable int id, Model model, Principal principal) throws ResourceNotFoundException {
+  public String postDetail(@PathVariable int id, Model model, Principal principal, 
+                           @RequestParam(name = "limit", defaultValue = "5") int limit) 
+                           throws ResourceNotFoundException {
+    
     model.addAttribute("isLoggedIn", principal != null);
     if(principal != null){
       model.addAttribute("username", principal.getName());
     }
     PostDTO post = postService.findById(id);
     model.addAttribute("post", post);
-    model.addAttribute("comments", commentService.findAllByPostId(id));
+    model.addAttribute("comments", commentService.findAllByPostIdLimitBy(id, limit));
     return "forum/postDetail";
   }
   

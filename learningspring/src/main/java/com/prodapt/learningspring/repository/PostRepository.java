@@ -1,11 +1,16 @@
 package com.prodapt.learningspring.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.prodapt.learningspring.entity.Post;
 
 public interface PostRepository extends CrudRepository<Post, Integer>{
+    @Query(value = "SELECT * FROM post LIMIT ?1", nativeQuery = true)
+    List<Post> findAllLimitBy(int limit);
+
     @Query(value = "SELECT COUNT(*) FROM post WHERE post.author_id = ?1 AND DATE(post.created_at) = DATE(NOW())", nativeQuery = true)
     int CountPostsCreatedTodayBy(int id);
 
