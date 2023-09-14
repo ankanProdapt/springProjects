@@ -1,4 +1,4 @@
-package com.rest.cycles;
+package com.rest.cycles.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.rest.cycles.entity.Brand;
+import com.rest.cycles.entity.Cycle;
+import com.rest.cycles.repository.BrandRepository;
+import com.rest.cycles.repository.CycleRepository;
 
 @RestController
 @RequestMapping("/cycles")

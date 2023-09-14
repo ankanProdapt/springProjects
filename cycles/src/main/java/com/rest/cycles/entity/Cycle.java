@@ -1,4 +1,4 @@
-package com.rest.cycles;
+package com.rest.cycles.entity;
 
 
 import jakarta.persistence.CascadeType;
