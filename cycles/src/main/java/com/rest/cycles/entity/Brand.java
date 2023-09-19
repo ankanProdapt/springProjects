@@ -16,7 +16,4 @@ public class Brand {
 
     @Column
     private String name;
-
-    @Column
-    private int stock;
 }

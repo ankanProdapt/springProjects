@@ -43,7 +43,6 @@ public class CycleController {
             cycle.setAvailable(true);
             cycleRepository.save(cycle);
         }
-        brand.setStock(brand.getStock() + qty);
         brandRepository.save(brand);
         return (List<Brand>)brandRepository.findAll();
     }
@@ -56,7 +55,6 @@ public class CycleController {
         if(c.isPresent()){
             Cycle cycle = c.get();
             cycle.setAvailable(false);
-            brand.setStock(brand.getStock() - 1);
             cycleRepository.save(cycle);
             brandRepository.save(brand);
         }

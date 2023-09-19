@@ -61,7 +61,7 @@ public class BasicConfiguration {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests((requests) -> requests
-            .requestMatchers("/api/register", "/api/auth/token").permitAll()
+            .requestMatchers("/api/register", "/api/auth/token", "/api/**").permitAll()
             .anyRequest().authenticated())
             .logout(withDefaults())
             .httpBasic(withDefaults())
