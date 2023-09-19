@@ -28,7 +28,7 @@ import com.rest.cycles.service.BrandService;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 public class CycleRestController {
 
     @Autowired
@@ -158,6 +158,7 @@ public class CycleRestController {
         return (List<Cycle>) cycleRepository.findAllAvailableCycles();
     }
 
+    @CrossOrigin("*")
     @PostMapping("/cycle/return/{id}")
     @ResponseBody
     public List<Cycle> returnCycle(@PathVariable int id) {

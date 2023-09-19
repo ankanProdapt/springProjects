@@ -40,7 +40,10 @@ public class BasicConfiguration {
 
 	@Value("${jwt.private.key}")
 	RSAPrivateKey priv;
-    
+
+    @Autowired
+    private CorsConfig corsConfig;
+
     @Autowired
     private CustomUserDetailsService userDetailsService;
     
@@ -60,8 +63,9 @@ public class BasicConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
             .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfig))
             .authorizeHttpRequests((requests) -> requests
-            .requestMatchers("/api/register", "/api/auth/token", "/api/**").permitAll()
+            .requestMatchers("/api/register", "/api/auth/token", "/api/brand/list","/api/cycle/borrowedList").permitAll()
             .anyRequest().authenticated())
             .logout(withDefaults())
             .httpBasic(withDefaults())

@@ -11,14 +11,18 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rest.cycles.business.LoginBody;
+import com.rest.cycles.dto.TokenDTO;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/auth")
 public class APIAuthController {
     
@@ -29,7 +33,8 @@ public class APIAuthController {
     AuthenticationManager authenticationManager;
 
     @PostMapping("/token")
-    public String token(@RequestBody LoginBody loginBody) {
+    @ResponseBody
+    public TokenDTO token(@RequestBody LoginBody loginBody) {
         Instant now = Instant.now();
         long expiry = 3600L;
         var username = loginBody.getUsername();
@@ -47,7 +52,9 @@ public class APIAuthController {
 				.claim("scope", scope)
 				.build();
 
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        TokenDTO token = new TokenDTO();
+        token.setToken(this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue());
+        return token;
     }
 
 }
