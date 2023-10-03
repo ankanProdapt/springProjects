@@ -10,13 +10,23 @@ import org.springframework.stereotype.Service;
 
 import com.prodapt.learningspring.dto.CommentDTO;
 import com.prodapt.learningspring.entity.Comment;
+import com.prodapt.learningspring.entity.Tag;
+import com.prodapt.learningspring.entity.User;
 import com.prodapt.learningspring.repository.CommentRepository;
+import com.prodapt.learningspring.repository.TagRepository;
+import com.prodapt.learningspring.repository.UserRepository;
 
 @Service
 public class CommentService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     private Map<Integer, List<Comment>> commentTree;
     private Map<Integer, Integer> level;
@@ -65,5 +75,21 @@ public class CommentService {
             comments.addAll(dfs(c, lvl + 1));
         }
         return comments;
+    }
+
+    public void saveTags(Comment comment) {
+        String[] words = comment.getContent().split(" ");
+        for(String word: words) {
+            if(word.substring(0, 1).equals("@")) {
+                String username = word.substring(1);
+                if(userRepository.findByName(username).isPresent()) {
+                    User user = userRepository.findByName(username).get();
+                    Tag tag = new Tag();
+                    tag.setComment(comment);
+                    tag.setUser(user);
+                    tagRepository.save(tag);
+                }
+            }
+        }
     }
 }

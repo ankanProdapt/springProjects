@@ -14,6 +14,7 @@ public class Brand {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-    @Column
     private String name;
+    private int advance;
+    private int rentPerHour;
 }

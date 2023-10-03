@@ -1,0 +1,35 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-LearningspringApplication<learningspring>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.prodapt.learningspring.LearningspringApplication",
+            "projectName": "learningspring",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=46459 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=learningspring"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CyclesApplication<cycles>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.rest.cycles.CyclesApplication",
+            "projectName": "cycles",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-OktaApplication<okta>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.helloworld.okta.OktaApplication",
+            "projectName": "okta",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

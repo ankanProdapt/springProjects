@@ -18,6 +18,9 @@ public class PostService {
     private CommentRepository commentRepository;
 
     @Autowired
+    private CommentService commentService;
+
+    @Autowired
     private LikeCRUDRepository likeCRUDRepository;
 
     @Autowired
@@ -33,6 +36,7 @@ public class PostService {
         postDTO.setCommentsCount(commentRepository.findAllByPostId(post.getId()).size());
         postDTO.setCreatedAt(post.getCreatedAt());
         postDTO.setUpdatedAt(post.getUpdatedAt());
+        postDTO.setComments(commentService.findAllByPostIdLimitBy(post.getId(), 50));
         return postDTO;
     }
 

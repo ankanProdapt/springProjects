@@ -22,8 +22,8 @@ public class BorrowedCycle {
     private Cycle cycle;
 
     @ManyToOne
-    @JoinColumn(name = "borrower_id", referencedColumnName = "id")
-    private User borrower;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
     
     private Date borrowedAt;
     private Date returnedAt;

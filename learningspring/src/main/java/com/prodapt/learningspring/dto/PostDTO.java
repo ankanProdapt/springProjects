@@ -1,6 +1,7 @@
 package com.prodapt.learningspring.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import com.prodapt.learningspring.entity.User;
 
@@ -16,4 +17,5 @@ public class PostDTO {
     private int commentsCount;
     private Date createdAt;
     private Date updatedAt;
+    private List<CommentDTO> comments;
 }
